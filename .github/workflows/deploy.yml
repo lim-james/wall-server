@@ -26,14 +26,13 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/wall-server:${{ github.sha }}
 
-
       - name: Deploy to EC2 instance
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
-          scripts: |
+          script: |
             docker stop instance || true
             docker rm instance || true
             docker pull ${{ secrets.DOCKER_USERNAME }}/wall-server:${{ github.sha }}
