@@ -36,4 +36,4 @@ jobs:
             docker stop instance || true
             docker rm instance || true
             docker pull ${{ secrets.DOCKER_USERNAME }}/wall-server:${{ github.sha }}
-            docker run -d --name instance -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/wall-server:${{ github.sha }}
+            docker run -d --name instance -e MYSQL_DSN=${{ secrets.MYSQL_DSN }} -p 80:80 ${{ secrets.DOCKER_USERNAME }}/wall-server:${{ github.sha }}

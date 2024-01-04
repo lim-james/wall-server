@@ -10,6 +10,9 @@ ARG GO_VERSION=1.21
 FROM golang:${GO_VERSION} AS build
 WORKDIR /src
 
+# Env variables
+ENV MYSQL_DSN="admin:GR6EcRz6@tcp(wall-db-sg.c34m04ea06an.ap-southeast-1.rds.amazonaws.com:3306)/"
+
 # Download dependencies as a separate step to take advantage of Docker's caching.
 # Leverage a cache mount to /go/pkg/mod/ to speed up subsequent builds.
 # Leverage bind mounts to go.sum and go.mod to avoid having to copy them into
