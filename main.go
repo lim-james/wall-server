@@ -19,11 +19,10 @@ type Post struct {
     Body string `json"body"`
 }
 
-func getAllHandler(c *gin.Context) {
+func readAllPostQuery() ([]Post, error) {
     rows, err := db.Query("SELECT * FROM post")
     if err != nil {
-        c.IndentedJSON(http.StatusNotFound, err)
-        return;
+        return nil, err
     }
     defer rows.Close()
 
@@ -31,13 +30,22 @@ func getAllHandler(c *gin.Context) {
     for rows.Next() {
         var post Post
         if err := rows.Scan(&post.ID, &post.Title, &post.Body); err != nil {
-            c.IndentedJSON(http.StatusNotFound, err)
-            return
+            return nil, err
         }
         posts = append(posts, post)
     }
 
     if err := rows.Err(); err != nil {
+        return nil, err
+    }
+
+    return posts, nil
+}
+
+func readAllPostHandler(c *gin.Context) {
+    posts, err := readAllPostQuery()
+
+    if err != nil {
         c.IndentedJSON(http.StatusNotFound, err)
         return
     }
@@ -45,7 +53,7 @@ func getAllHandler(c *gin.Context) {
     c.IndentedJSON(http.StatusOK, posts)
 }
 
-func newPost(post Post) (int64, error) {
+func createPostQuery(post Post) (int64, error) {
     result, err := db.Exec("INSERT INTO post (title, body) VALUES (?, ?)", post.Title, post.Body)
     if err != nil {
         return -1, err
@@ -54,17 +62,17 @@ func newPost(post Post) (int64, error) {
     return result.LastInsertId()
 }
 
-func newPostHandler(c *gin.Context) {
+func createPostHandler(c *gin.Context) {
     var post Post
     
     if err := c.BindJSON(&post); err != nil {
-        c.IndentedJSON(http.StatusNotFound, err)
+        c.IndentedJSON(http.StatusBadRequest, err)
         return
     }
 
-    id, err := newPost(post)
+    id, err := createPostQuery(post)
     if err != nil {
-        c.IndentedJSON(http.StatusNotFound, err)
+        c.IndentedJSON(http.StatusBadRequest, err)
         return
     }
 
@@ -85,8 +93,8 @@ func main() {
 
     r := gin.Default()
 
-    r.GET("/", getAllHandler)    
-    r.POST("/", newPostHandler)    
+    r.GET("/", readAllPostHandler)    
+    r.POST("/", createPostHandler)    
 
     r.Run("0.0.0.0:80")
 }
