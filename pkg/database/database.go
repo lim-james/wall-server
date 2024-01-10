@@ -37,10 +37,30 @@ func (d *Database) ReadAllPosts() ([]models.Post, error) {
 }
 
 func (d *Database) CreatePost(post models.Post) (int64, error) {
-    result, err := d.DB.Exec("INSERT INTO post (title, body) VALUES (?, ?)", post.Title, post.Body)
-    if err != nil {
-        return 0, err
-    }
+	tx, err := d.DB.Begin()
+	if err != nil {
+		return 0, err
+	}
+	defer func() {
+		if p := recover(); p != nil {
+			_ = tx.Rollback()
+			panic(p) 
+		} else if err != nil {
+			_ = tx.Rollback() 
+		} else {
+			err = tx.Commit() 
+		}
+	}()
 
-    return result.LastInsertId()
+	result, err := tx.Exec("INSERT INTO post (title, body) VALUES (?, ?)", post.Title, post.Body)
+	if err != nil {
+		return 0, err
+	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	return id, nil
 }
