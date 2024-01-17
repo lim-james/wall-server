@@ -49,6 +49,7 @@ func Run() error {
 		{
 			auth.POST("/signup", authHandler.SignupHandler)
 			auth.POST("/login", authHandler.LoginHandler)
+			auth.DELETE("/:user_id", handlers.AuthMiddleware(), authHandler.DeleteUserHandler) 
 		}
 	}
 

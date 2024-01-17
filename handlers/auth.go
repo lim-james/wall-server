@@ -74,6 +74,17 @@ func (ah *AuthHandler) SignupHandler(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"user": user, "token": token})
 }
 
+func (ah *AuthHandler) DeleteUserHandler(c *gin.Context) {
+	userID := c.MustGet("UserID").(int64)
+	err := ah.DB.DeleteUser(userID)
+	if err != nil {
+		ErrorResponse(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
+}
+
 func (ah *AuthHandler) generateToken(userID int64) (string, error) {
 	claims := CustomClaims{
 		UserID: userID,
