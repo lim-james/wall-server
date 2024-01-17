@@ -11,28 +11,42 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func setupDatabase() *sql.DB {
-	db, err := sql.Open("mysql", os.Getenv("MYSQL_DSN"))
-	if err != nil {
-		database.HandleError(err)
-	}
-	if err := db.Ping(); err != nil {
-		database.HandleError(err)
-	}
-	return db
+type Server struct {
+	DB     *sql.DB
+	Router *gin.Engine
 }
 
-func Run() error {
-	db := setupDatabase()
-	database := database.NewDatabase(db)
-	defer db.Close()
+func NewServer() (*Server, error) {
+	db, err := sql.Open("mysql", os.Getenv("MYSQL_DSN"))
+	if err != nil {
+		return nil, err
+	}
+	if err := db.Ping(); err != nil {
+		return nil, err
+	}
 
 	r := gin.Default()
+
+	server := &Server{
+		DB:     db,
+		Router: r,
+	}
+	return server, nil
+}
+
+func (s *Server) Close() {
+	s.DB.Close()
+}
+
+func (s *Server) Run() error {
+	defer s.Close()
+
+	database := database.NewDatabase(s.DB)
 
 	authHandler := handlers.NewAuthHandler(database)
 	postHandler := handlers.NewPostHandler(database)
 
-	api := r.Group("/api")
+	api := s.Router.Group("/api")
 	{
 		api.GET("/", postHandler.ReadAllPostHandler)
 
@@ -49,9 +63,9 @@ func Run() error {
 		{
 			auth.POST("/signup", authHandler.SignupHandler)
 			auth.POST("/login", authHandler.LoginHandler)
-			auth.DELETE("/:user_id", handlers.AuthMiddleware(), authHandler.DeleteUserHandler) 
+			auth.DELETE("/:user_id", handlers.AuthMiddleware(), authHandler.DeleteUserHandler)
 		}
 	}
 
-	return r.Run("0.0.0.0:80")
+	return s.Router.Run("0.0.0.0:80")
 }

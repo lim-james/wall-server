@@ -6,8 +6,13 @@ import (
 )
 
 func main() {
-	err := app.Run()
+	server, err := app.NewServer()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to initialize server: %v", err)
+	}
+	defer server.Close()
+
+	if err := server.Run(); err != nil {
+		log.Fatalf("Server error: %v", err)
 	}
 }
