@@ -61,6 +61,19 @@ All API endpoints are relative to the base URL: `/api`
   - Success: Status code 200 with JWT token
   - Error: Status code 401 for unauthorized access
 
+### Delete Account
+- **Path**: `/api/u/`
+- **Method**: DELETE
+- **Auth Required**: Yes
+- **Example Request** (cURL):
+  ```
+  curl -X DELETE https://ec2-52-77-251-29.ap-southeast-1.compute.amazonaws.com/api/u/ \
+  -H 'Authorization: Bearer [JWT Token]' \
+  ```
+- **Response**:
+  - Success: Status code 200 with JWT token
+  - Error: Status code 401 for unauthorized access
+
 ---
 
 ## Post Endpoints

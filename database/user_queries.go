@@ -48,6 +48,13 @@ func (d *Database) CreateUser(user models.User) (int64, error) {
 	return id, HandleError(err)
 }
 
+func (d *Database) DeleteUser(userID int64) error {
+	return d.withTransaction(func(tx *sql.Tx) error {
+		_, err := tx.Exec("DELETE FROM users WHERE user_id = ?", userID)
+		return HandleError(err)
+	})
+}
+
 func IsUniqueUsername(tx *sql.Tx, username string) bool {
 	var count int
 	err := tx.QueryRow("SELECT COUNT(*) FROM users WHERE username = ?", username).Scan(&count)
