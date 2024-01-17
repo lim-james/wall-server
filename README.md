@@ -3,82 +3,121 @@
 
 # Wall Posts API
 
-## Overview
-
-The Wall Posts API allows you to retrieve existing posts and create new posts on the wall.
-
 ## Base URL
 
 `https://ec2-52-77-251-29.ap-southeast-1.compute.amazonaws.com`
 
-## Endpoints
+# API Documentation
 
-### 1. Get All Posts
+## Overview
 
-#### Endpoint
+This document outlines the RESTful API endpoints for [Your Server Name]. The server is built using the Gin framework in Go and interacts with a MySQL database.
 
-`GET /`
+## Base URL
 
-#### Description
+All API endpoints are relative to the base URL: `/api`
 
-Retrieve all posts on the wall.
+---
 
-#### Response
+## Authentication Endpoints
 
-```json
-[
-    {
-        "id": 1,
-        "title": "title",
-        "Body": "body"
-    },
-    {
-        "id": 2,
-        "title": "mystical",
-        "Body": "body"
-    }
-]
-```
+### Sign Up
+- **Path**: `/api/u/signup`
+- **Method**: POST
+- **Body**: 
+  ```json
+  {
+      "username": "user123",
+      "password_hash": "hashedpassword"
+  }
+  ```
+- **Example Request** (cURL):
+  ```
+  curl -X POST https://ec2-52-77-251-29.ap-southeast-1.compute.amazonaws.com/api/u/signup \
+  -H 'Content-Type: application/json' \
+  -d '{"username": "user123", "password_hash": "hashedpassword"}'
+  ```
+- **Response**:
+  - Success: Status code 200 with user details
+  - Error: Status code 4xx/5xx with error message
 
-#### Example Usage
+### Login
+- **Path**: `/api/u/login`
+- **Method**: POST
+- **Body**: 
+  ```json
+  {
+      "username": "user123",
+      "password_hash": "hashedpassword"
+  }
+  ```
+- **Example Request** (cURL):
+  ```
+  curl -X POST https://ec2-52-77-251-29.ap-southeast-1.compute.amazonaws.com/api/u/login \
+  -H 'Content-Type: application/json' \
+  -d '{"username": "user123", "password_hash": "hashedpassword"}'
+  ```
+- **Response**:
+  - Success: Status code 200 with JWT token
+  - Error: Status code 401 for unauthorized access
 
-```bash
-curl https://ec2-52-77-251-29.ap-southeast-1.compute.amazonaws.com
-```
+---
 
-### 2. Create a New Post
+## Post Endpoints
 
-#### Endpoint
+### Create Post
+- **Path**: `/api/p/`
+- **Method**: POST
+- **Auth Required**: Yes
+- **Body**:
+  ```json
+  {
+      "title": "Sample Title",
+      "body": "This is a sample post."
+  }
+  ```
+- **Example Request** (cURL):
+  ```
+  curl -X POST https://ec2-52-77-251-29.ap-southeast-1.compute.amazonaws.com/api/p/ \
+  -H 'Authorization: Bearer [JWT Token]' \
+  -H 'Content-Type: application/json' \
+  -d '{"title": "Sample Title", "body": "This is a sample post."}'
+  ```
+- **Response**:
+  - Success: Status code 200 with created post details
+  - Error: Status code 4xx/5xx with error message
 
-`POST /`
+### Like Post
+- **Path**: `/api/p/:post_id/like`
+- **Method**: POST
+- **Auth Required**: Yes
+- **Example Request** (cURL):
+  ```
+  curl -X POST https://ec2-52-77-251-29.ap-southeast-1.compute.amazonaws.com/api/p/123/like \
+  -H 'Authorization: Bearer [JWT Token]'
+  ```
+  (where 123 is the post_id)
+- **Response**:
+  - Success: Status code 200 with updated like status
+  - Error: Status code 4xx/5xx with error message
 
-#### Description
+### Unlike Post
+- **Path**: `/api/p/:post_id/unlike`
+- **Method**: POST
+- **Auth Required**: Yes
+- **Example Request** (cURL):
+  ```
+  curl -X POST https://ec2-52-77-251-29.ap-southeast-1.compute.amazonaws.com`/api/p/123/unlike \
+  -H 'Authorization: Bearer [JWT Token]'
+  ```
+  (where 123 is the post_id)
+- **Response**:
+  - Success: Status code 200 with updated like status
+  - Error: Status code 4xx/5xx with error message
 
-Create a new post on the wall.
+---
 
-#### Request
+## Error Codes
 
-```json
-{
-    "title": "new title",
-    "Body": "new body"
-}
-```
-
-#### Response
-
-```json
-{
-    "id": 3,
-    "title": "new title",
-    "Body": "new body"
-}
-```
-
-#### Example Usage
-
-```bash
-curl -X POST -H "Content-Type: application/json" -d '{"title":"new title", "Body":"new body"}' https://ec2-52-77-251-29.ap-southeast-1.compute.amazonaws.com
-```
-
-
+- `4xx`: Client errors (e.g., bad request, unauthorized, not found)
+- `5xx`: Server errors (e.g., internal server error)
