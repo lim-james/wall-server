@@ -5,7 +5,6 @@ import (
 	"wall-server/app"
 )
 
-
 func main() {
 	err := app.Run()
 	if err != nil {

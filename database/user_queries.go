@@ -8,7 +8,7 @@ import (
 
 const (
 	selectUserByUsernameQuery = "SELECT user_id, username, password_hash FROM users WHERE username = ?"
-	insertUserQuery = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
+	insertUserQuery           = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
 )
 
 func (d *Database) ReadUserByUsername(username string) (*models.User, error) {
@@ -53,7 +53,7 @@ func IsUniqueUsername(tx *sql.Tx, username string) bool {
 	err := tx.QueryRow("SELECT COUNT(*) FROM users WHERE username = ?", username).Scan(&count)
 	if err != nil {
 		HandleError(err)
-		return false 
+		return false
 	}
 	return count == 0
 }

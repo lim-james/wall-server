@@ -5,10 +5,10 @@ import (
 )
 
 const (
-	selectLikesCountQuery    = "SELECT COUNT(*) AS total_likes FROM post_likes WHERE post_id = ?"
-	selectLikeExistsQuery    = "SELECT 1 FROM post_likes WHERE user_id = ? AND post_id = ? LIMIT 1"
-	insertLikeQuery          = "INSERT INTO post_likes (user_id, post_id) VALUES (?, ?)"
-	deleteLikeQuery          = "DELETE FROM post_likes WHERE user_id = ? AND post_id = ?"
+	selectLikesCountQuery = "SELECT COUNT(*) AS total_likes FROM post_likes WHERE post_id = ?"
+	selectLikeExistsQuery = "SELECT 1 FROM post_likes WHERE user_id = ? AND post_id = ? LIMIT 1"
+	insertLikeQuery       = "INSERT INTO post_likes (user_id, post_id) VALUES (?, ?)"
+	deleteLikeQuery       = "DELETE FROM post_likes WHERE user_id = ? AND post_id = ?"
 )
 
 func (d *Database) GetTotalLikesForPost(postID int64) (int, error) {

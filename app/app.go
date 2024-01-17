@@ -32,7 +32,7 @@ func Run() error {
 	authHandler := handlers.NewAuthHandler(database)
 	postHandler := handlers.NewPostHandler(database)
 
-	api := r.Group("/api") 
+	api := r.Group("/api")
 	{
 		api.GET("/", postHandler.ReadAllPostHandler)
 
@@ -47,7 +47,7 @@ func Run() error {
 		// Auth routes
 		auth := api.Group("/u")
 		{
-			auth.POST("/signup", authHandler.SignupHandler) 
+			auth.POST("/signup", authHandler.SignupHandler)
 			auth.POST("/login", authHandler.LoginHandler)
 		}
 	}

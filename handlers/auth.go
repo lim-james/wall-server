@@ -30,7 +30,7 @@ func (ah *AuthHandler) LoginHandler(c *gin.Context) {
 	}
 
 	userCredentials, err := ah.DB.ReadUserByUsername(user.Username)
-	
+
 	if err != nil {
 		ErrorResponse(c, http.StatusInternalServerError, err)
 		return
