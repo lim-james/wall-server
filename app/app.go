@@ -58,8 +58,8 @@ func (s *Server) Run() error {
 			post.DELETE("/:post_id/", postHandler.DeletePostHandler)
 			post.POST("/:post_id/like", postHandler.LikePostHandler)
 			post.POST("/:post_id/unlike", postHandler.UnlikePostHandler)
-			// post.POST("/:post_id/subscribe", postHandler.SubscribePostHandler)
-			// post.POST("/:post_id/unsubscribe", postHandler.UnsubscribePostHandler)
+			post.POST("/:post_id/subscribe", postHandler.SubscribePostHandler)
+			post.POST("/:post_id/unsubscribe", postHandler.UnsubscribePostHandler)
 		}
 
 		// Auth routes
@@ -69,6 +69,7 @@ func (s *Server) Run() error {
 			auth.POST("/login", authHandler.LoginHandler)
 			auth.GET("/:user_id", postHandler.ReadAllPostsByUserIDHandler)
 			auth.DELETE("/:user_id", handlers.AuthMiddleware(), authHandler.DeleteUserHandler)
+			auth.GET("/:user_id/subscriptions", handlers.AuthMiddleware(), postHandler.ReadAllSubscribedPostsHandler)
 		}
 	}
 
