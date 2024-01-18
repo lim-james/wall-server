@@ -24,7 +24,9 @@ func (ph *PostHandler) ReadAllPostHandler(c *gin.Context) {
 		return
 	}
 
-	c.IndentedJSON(http.StatusOK, posts)
+	c.JSON(http.StatusOK, posts)
+}
+
 }
 
 func (ph *PostHandler) CreatePostHandler(c *gin.Context) {
@@ -44,5 +46,5 @@ func (ph *PostHandler) CreatePostHandler(c *gin.Context) {
 	}
 
 	post.PostID = id
-	c.IndentedJSON(http.StatusCreated, post)
+	c.JSON(http.StatusCreated, post)
 }

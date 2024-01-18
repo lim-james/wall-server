@@ -21,5 +21,5 @@ func NewHandler(db *database.Database) *Handler {
 }
 
 func ErrorResponse(c *gin.Context, statusCode int, err error) {
-	c.IndentedJSON(statusCode, gin.H{"error": err.Error()})
+	c.JSON(statusCode, gin.H{"error": err.Error()})
 }
