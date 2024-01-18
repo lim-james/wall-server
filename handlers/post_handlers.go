@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"wall-server/database"
@@ -27,6 +29,21 @@ func (ph *PostHandler) ReadAllPostHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, posts)
 }
 
+func (ph *PostHandler) ReadAllPostsByUserIDHandler(c *gin.Context) {
+	userIDStr := c.Param("user_id")
+	userID, err := strconv.ParseInt(userIDStr, 10, 64)
+	if err != nil {
+		ErrorResponse(c, http.StatusBadRequest, errors.New("Invalid user_id"))
+		return
+	}
+
+	posts, err := ph.DB.ReadAllPostsByUserID(userID)
+	if err != nil {
+		ErrorResponse(c, http.StatusNotFound, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, posts)
 }
 
 func (ph *PostHandler) CreatePostHandler(c *gin.Context) {
