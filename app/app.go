@@ -63,6 +63,7 @@ func (s *Server) Run() error {
 		{
 			auth.POST("/signup", authHandler.SignupHandler)
 			auth.POST("/login", authHandler.LoginHandler)
+			auth.GET("/:user_id", postHandler.ReadAllPostsByUserIDHandler)
 			auth.DELETE("/:user_id", handlers.AuthMiddleware(), authHandler.DeleteUserHandler)
 		}
 	}
