@@ -17,7 +17,6 @@ func (d *Database) ReadUserByUsername(username string) (*models.User, error) {
 		Scan(&user.UserID, &user.Username, &user.PasswordHash)
 
 	if err != nil {
-		// fmt.Println(err)
 		return nil, HandleError(err)
 	}
 

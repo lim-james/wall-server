@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -42,7 +43,7 @@ func (ph *PostHandler) UnlikePostHandler(c *gin.Context) {
 	postIDStr := c.Param("post_id")
 	postID, err := strconv.ParseInt(postIDStr, 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid post_id"})
+		ErrorResponse(c, http.StatusBadRequest, errors.New("Invalid post_id"))
 		return
 	}
 
