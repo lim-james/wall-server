@@ -14,17 +14,18 @@ func (ph *PostHandler) LikePostHandler(c *gin.Context) {
 	postIDStr := c.Param("post_id")
 	postID, err := strconv.ParseInt(postIDStr, 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid post_id"})
+		ErrorResponse(c, http.StatusBadRequest, errors.New("Invalid post_id"))
 		return
 	}
 
 	if has, _ := ph.DB.HasLikedPost(userID, postID); has {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "You have already liked this post"})
+		ErrorResponse(c, http.StatusBadRequest, errors.New("You have already liked this post"))
 		return
 	}
 
 	if err := ph.DB.LikePost(userID, postID); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to like the post"})
+		ErrorResponse(c, http.StatusInternalServerError, errors.New("You have already liked this post"))
 		return
 	}
 
