@@ -13,7 +13,7 @@ const (
 	selectPostByIDQuery  = "SELECT post_id, user_id, title, body, creation_time FROM posts WHERE post_id = ?"
 	selectPostAuthorByIDQuery  = "SELECT user_id FROM posts WHERE post_id = ?"
 	insertPostQuery  = "INSERT INTO posts (user_id, title, body) VALUES (?, ?, ?)"
-	updatePostQuery  = "UPDATE posts SET title = ?, body = ? WHERE user_id = ?"
+	updatePostQuery  = "UPDATE posts SET title = ?, body = ? WHERE post_id = ?"
 	deletePostByIDQuery  = "DELETE FROM posts WHERE post_id = ?"
 )
 
