@@ -49,6 +49,7 @@ func (s *Server) Run() error {
 	api := s.Router.Group("/api")
 	{
 		api.GET("/", postHandler.ReadAllPostHandler)
+		api.GET("/p/:post_id/comments", postHandler.ReadAllCommentsHandler)
 
 		post := api.Group("/p")
 		{
@@ -60,6 +61,9 @@ func (s *Server) Run() error {
 			post.POST("/:post_id/unlike", postHandler.UnlikePostHandler)
 			post.POST("/:post_id/subscribe", postHandler.SubscribePostHandler)
 			post.POST("/:post_id/unsubscribe", postHandler.UnsubscribePostHandler)
+			post.POST("/:post_id/comments", postHandler.CreateCommentHandler)
+			post.PUT("/:post_id/comments/:comment_id", postHandler.EditCommentHandler)
+			post.DELETE("/:post_id/comments/:comment_id", postHandler.DeleteCommentHandler)
 		}
 
 		// Auth routes
