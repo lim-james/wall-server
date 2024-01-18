@@ -54,8 +54,12 @@ func (s *Server) Run() error {
 		{
 			post.Use(handlers.AuthMiddleware())
 			post.POST("/", postHandler.CreatePostHandler)
+			post.PUT("/:post_id/", postHandler.EditPostHandler)
+			post.DELETE("/:post_id/", postHandler.DeletePostHandler)
 			post.POST("/:post_id/like", postHandler.LikePostHandler)
 			post.POST("/:post_id/unlike", postHandler.UnlikePostHandler)
+			// post.POST("/:post_id/subscribe", postHandler.SubscribePostHandler)
+			// post.POST("/:post_id/unsubscribe", postHandler.UnsubscribePostHandler)
 		}
 
 		// Auth routes
