@@ -7,11 +7,11 @@ import (
 )
 
 const (
-	selectAllCommentsByPostIDQuery  = "SELECT comment_id, user_id, post_id, comment_text, creation_time FROM post_comments WHERE post_id = ?"
-	selectCommentAuthorByIDQuery  = "SELECT user_id FROM post_comments WHERE comment_id = ?"
-	insertCommentQuery  = "INSERT INTO post_comments (post_id, user_id, comment_text) VALUES (?, ?, ?)"
-	updateCommentQuery  = "UPDATE post_comments SET comment_text = ? WHERE comment_id = ?"
-	deleteCommentQuery  = "DELETE FROM post_comments WHERE comment_id = ?"
+	selectAllCommentsByPostIDQuery = "SELECT comment_id, user_id, post_id, comment_text, creation_time FROM post_comments WHERE post_id = ?"
+	selectCommentAuthorByIDQuery   = "SELECT user_id FROM post_comments WHERE comment_id = ?"
+	insertCommentQuery             = "INSERT INTO post_comments (post_id, user_id, comment_text) VALUES (?, ?, ?)"
+	updateCommentQuery             = "UPDATE post_comments SET comment_text = ? WHERE comment_id = ?"
+	deleteCommentQuery             = "DELETE FROM post_comments WHERE comment_id = ?"
 )
 
 func (d *Database) ReadAllCommentsByPostID(postID int64) ([]models.Comment, error) {
@@ -33,7 +33,7 @@ func (d *Database) ReadAllCommentsByPostID(postID int64) ([]models.Comment, erro
 		if err != nil {
 			return nil, HandleError(err)
 		}
-		
+
 		comments = append(comments, comment)
 	}
 

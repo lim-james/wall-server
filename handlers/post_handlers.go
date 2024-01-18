@@ -131,4 +131,3 @@ func (ph *PostHandler) DeletePostHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Post deleted successfully"})
 }
-
