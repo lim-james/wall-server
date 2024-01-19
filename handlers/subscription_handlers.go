@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 	"strconv"
+	"errors"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,17 +14,17 @@ func (ph *PostHandler) SubscribePostHandler(c *gin.Context) {
 	postID, err := strconv.ParseInt(postIDStr, 10, 64)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid post_id"})
+		ErrorResponse(c, http.StatusBadRequest, errors.New("Invalid post_id"))
 		return
 	}
 
 	if has, _ := ph.DB.HasSubscribedPost(userID, postID); has {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "You have already subscribed to this post"})
+		ErrorResponse(c, http.StatusBadRequest, errors.New("You have already subscribed to this post"))
 		return
 	}
 
 	if err := ph.DB.SubscribePost(userID, postID); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to subscribe the post"})
+		ErrorResponse(c, http.StatusBadRequest, errors.New("Failed to subscribe the post"))
 		return
 	}
 
@@ -41,12 +42,12 @@ func (ph *PostHandler) UnsubscribePostHandler(c *gin.Context) {
 	}
 
 	if has, _ := ph.DB.HasSubscribedPost(userID, postID); !has {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "You are already unsubscribed to this post"})
+		ErrorResponse(c, http.StatusBadRequest, errors.New("You are already unsubscribed to this post"))
 		return
 	}
 
 	if err := ph.DB.UnsubscribePost(userID, postID); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to unsubscribe the post"})
+		ErrorResponse(c, http.StatusInternalServerError, errors.New("Failed to unsubscribe the post"))
 		return
 	}
 
@@ -58,7 +59,7 @@ func (ph *PostHandler) ReadAllSubscribedPostsHandler(c *gin.Context) {
 
 	posts, err := ph.DB.ReadAllSubscribedPosts(userID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch subscribed posts"})
+		ErrorResponse(c, http.StatusInternalServerError, errors.New("Failed to fetch subscribed posts"))
 		return
 	}
 
