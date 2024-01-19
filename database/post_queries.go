@@ -2,7 +2,6 @@ package database
 
 import (
 	"database/sql"
-	"log"
 	"time"
 	"wall-server/database/models"
 )
@@ -29,8 +28,7 @@ func (d *Database) ReadAllPosts() ([]models.Post, error) {
 		var post models.Post
 		var creationTimeStr string
 		if err := rows.Scan(&post.PostID, &post.UserID, &post.Title, &post.Body, &creationTimeStr); err != nil {
-			log.Fatal(err)
-			return nil, err
+			return nil, HandleError(err)
 		}
 
 		post.CreationTime, err = time.Parse("2006-01-02 15:04:05", creationTimeStr)
@@ -60,8 +58,7 @@ func (d *Database) ReadAllPostsByUserID(userID int64) ([]models.Post, error) {
 		var post models.Post
 		var creationTimeStr string
 		if err := rows.Scan(&post.PostID, &post.UserID, &post.Title, &post.Body, &creationTimeStr); err != nil {
-			log.Fatal(err)
-			return nil, err
+			return nil, HandleError(err)
 		}
 
 		post.CreationTime, err = time.Parse("2006-01-02 15:04:05", creationTimeStr)
@@ -138,8 +135,7 @@ func (d *Database) ReadPostsByUserID(userID int64) ([]models.Post, error) {
 		var post models.Post
 		var creationTimeStr string
 		if err := rows.Scan(&post.PostID, &post.UserID, &post.Title, &post.Body, &creationTimeStr); err != nil {
-			log.Fatal(err)
-			return nil, err
+			return nil, HandleError(err)
 		}
 
 		post.CreationTime, err = time.Parse("2006-01-02 15:04:05", creationTimeStr)

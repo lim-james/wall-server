@@ -17,7 +17,7 @@ const (
 func (d *Database) ReadAllCommentsByPostID(postID int64) ([]models.Comment, error) {
 	rows, err := d.DB.Query(selectAllCommentsByPostIDQuery, postID)
 	if err != nil {
-		return nil, err
+		return nil, HandleError(err)
 	}
 	defer rows.Close()
 
