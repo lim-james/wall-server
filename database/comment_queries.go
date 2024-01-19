@@ -8,6 +8,7 @@ import (
 
 const (
 	selectAllCommentsByPostIDQuery = "SELECT comment_id, user_id, post_id, comment_text, creation_time FROM post_comments WHERE post_id = ?"
+	selectCommentByIDQuery         = "SELECT comment_id, user_id, post_id, comment_text, creation_time FROM post_comments WHERE comment_id = ?"
 	selectCommentAuthorByIDQuery   = "SELECT user_id FROM post_comments WHERE comment_id = ?"
 	insertCommentQuery             = "INSERT INTO post_comments (post_id, user_id, comment_text) VALUES (?, ?, ?)"
 	updateCommentQuery             = "UPDATE post_comments SET comment_text = ? WHERE comment_id = ?"
@@ -38,6 +39,24 @@ func (d *Database) ReadAllCommentsByPostID(postID int64) ([]models.Comment, erro
 	}
 
 	return comments, nil
+}
+
+func (d *Database) ReadCommentByID(commentID int64, comment *models.Comment) error {
+	var creationTimeStr string
+
+	err := d.DB.QueryRow(selectCommentByIDQuery, commentID).
+		Scan(&comment.CommentID, &comment.UserID, &comment.PostID, &comment.Text, &creationTimeStr)
+
+	if err != nil {
+		return HandleError(err)
+	}
+
+	comment.CreationTime, err = time.Parse("2006-01-02 15:04:05", creationTimeStr)
+	if err != nil {
+		return HandleError(err)
+	}
+
+	return nil
 }
 
 func (d *Database) ReadCommentAuthorByID(commentID int64) (int64, error) {

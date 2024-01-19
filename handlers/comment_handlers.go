@@ -103,15 +103,22 @@ func (ph *PostHandler) DeleteCommentHandler(c *gin.Context) {
 
 	userID := c.MustGet("UserID").(int64)
 
-	var author int64
-	if author, err = ph.DB.ReadCommentAuthorByID(commentID); err != nil {
+	var comment models.Comment
+	if err = ph.DB.ReadCommentByID(commentID, &comment); err != nil {
 		ErrorResponse(c, http.StatusBadRequest, err)
 		return
 	}
 
-	if author != userID {
-		ErrorResponse(c, http.StatusBadRequest, errors.New("You are not the author of this comment"))
-		return
+	if comment.UserID != userID {
+		var postAuthor int64
+		if postAuthor, err = ph.DB.ReadPostAuthorByID(comment.PostID); err != nil {
+			ErrorResponse(c, http.StatusBadRequest, err)
+		}
+
+		if postAuthor != userID {
+			ErrorResponse(c, http.StatusBadRequest, errors.New("You are not the author of this comment"))
+			return
+		}
 	}
 
 	if err := ph.DB.DeleteComment(commentID); err != nil {
