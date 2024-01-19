@@ -1,9 +1,9 @@
 package handlers
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
-	"errors"
 
 	"github.com/gin-gonic/gin"
 )
