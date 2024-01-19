@@ -23,9 +23,8 @@ func (ph *PostHandler) ReadAllCommentsHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, comments)	
+	c.JSON(http.StatusOK, comments)
 }
-
 
 func (ph *PostHandler) CreateCommentHandler(c *gin.Context) {
 	userID := c.MustGet("UserID").(int64)
@@ -121,4 +120,4 @@ func (ph *PostHandler) DeleteCommentHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Comment deleted"})
-}	
+}

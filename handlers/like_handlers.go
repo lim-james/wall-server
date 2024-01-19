@@ -24,7 +24,6 @@ func (ph *PostHandler) LikePostHandler(c *gin.Context) {
 	}
 
 	if err := ph.DB.LikePost(userID, postID); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to like the post"})
 		ErrorResponse(c, http.StatusInternalServerError, errors.New("You have already liked this post"))
 		return
 	}
@@ -32,7 +31,7 @@ func (ph *PostHandler) LikePostHandler(c *gin.Context) {
 	// Fetch and return the total number of likes for the post
 	totalLikes, err := ph.DB.GetTotalLikesForPost(postID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch total likes"})
+		ErrorResponse(c, http.StatusInternalServerError, errors.New("Failed to fetch total likes"))
 		return
 	}
 
@@ -49,19 +48,19 @@ func (ph *PostHandler) UnlikePostHandler(c *gin.Context) {
 	}
 
 	if has, _ := ph.DB.HasLikedPost(userID, postID); !has {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "You have not liked this post"})
+		ErrorResponse(c, http.StatusBadRequest, errors.New("You have not liked this post"))
 		return
 	}
 
 	if err := ph.DB.UnlikePost(userID, postID); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to unlike the post"})
+		ErrorResponse(c, http.StatusInternalServerError, errors.New("Failed to unlike the post"))
 		return
 	}
 
 	// Fetch and return the total number of likes for the post
 	totalLikes, err := ph.DB.GetTotalLikesForPost(postID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch total likes"})
+		ErrorResponse(c, http.StatusInternalServerError, errors.New("Failed to fetch total likes"))
 		return
 	}
 

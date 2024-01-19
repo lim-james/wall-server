@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	selectSubscriptionQuery 			= "SELECT post_id FROM subscriptions WHERE subscriber_id = ?"
+	selectSubscriptionQuery       = "SELECT post_id FROM subscriptions WHERE subscriber_id = ?"
 	selectSubscriptionExistsQuery = "SELECT 1 FROM subscriptions WHERE subscriber_id = ? AND post_id = ? LIMIT 1"
 	insertSubscriptionQuery       = "INSERT INTO subscriptions (subscriber_id, post_id) VALUES (?, ?)"
 	deleteSubscriptionQuery       = "DELETE FROM subscriptions WHERE subscriber_id = ? AND post_id = ?"
@@ -54,7 +54,7 @@ func (d *Database) ReadAllSubscribedPosts(userID int64) ([]models.Post, error) {
 		}
 
 		posts = append(posts, post)
-	}	
+	}
 
 	if err := rows.Err(); err != nil {
 		return nil, HandleError(err)
