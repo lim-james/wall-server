@@ -91,6 +91,16 @@ func (d *Database) ReadCommentAuthorByID(commentID int64) (int64, error) {
 }
 
 func (d *Database) CreateComment(comment models.Comment) (int64, error) {
+	if comment.ReplyID != 0 {
+		var refComment models.Comment
+		if err := d.ReadCommentByID(comment.ReplyID, &refComment); err != nil {
+			return 0, HandleError(err)
+		}
+		if comment.PostID != refComment.PostID { 
+			return 0, HandleError(errors.New("Comment reply_id does not match post_id"))
+		}
+	}
+
 	var id int64
 
 	err := d.withTransaction(func(tx *sql.Tx) error {
