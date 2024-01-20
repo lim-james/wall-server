@@ -10,6 +10,8 @@ CREATE TABLE posts (
     title VARCHAR(255) NOT NULL,
     body TEXT NOT NULL,
     creation_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_edited BOOLEAN DEFAULT FALSE,
+    last_edited_time TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
@@ -50,6 +52,8 @@ CREATE TABLE subscriptions (
     subscriber_id INT,
     post_id INT,
     creation_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_edited BOOLEAN DEFAULT FALSE,
+    last_edited_time TIMESTAMP,
     FOREIGN KEY (subscriber_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE
 );
