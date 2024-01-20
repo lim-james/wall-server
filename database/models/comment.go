@@ -11,5 +11,6 @@ type Comment struct {
 	Text           string    `json:"text" binding:"required"`
 	CreationTime   time.Time `json:"creation_time"`
 	IsEdited       bool      `json:"is_edited"`
+	ReplyID        int64     `json:"reply_id"`
 	LastEditedTime time.Time `json:"last_edited_time"`
 }
