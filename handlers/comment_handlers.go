@@ -83,9 +83,10 @@ func (ph *PostHandler) EditCommentHandler(c *gin.Context) {
 		return
 	}
 
+	newComment.IsEdited = true
 	newComment.CommentID = commentID
 
-	if err := ph.DB.EditComment(newComment); err != nil {
+	if newComment.LastEditedTime, err = ph.DB.EditComment(newComment); err != nil {
 		ErrorResponse(c, http.StatusBadRequest, err)
 		return
 	}

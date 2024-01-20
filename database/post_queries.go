@@ -7,12 +7,12 @@ import (
 )
 
 const (
-	selectPostsQuery          = "SELECT post_id, user_id, title, body, creation_time FROM posts"
-	selectPostsByUserIDQuery  = "SELECT post_id, user_id, title, body, creation_time FROM posts WHERE user_id = ?"
-	selectPostByIDQuery       = "SELECT post_id, user_id, title, body, creation_time FROM posts WHERE post_id = ?"
+	selectPostsQuery          = "SELECT post_id, user_id, title, body, creation_time, is_edited, last_edited_time FROM posts"
+	selectPostsByUserIDQuery  = "SELECT post_id, user_id, title, body, creation_time, is_edited, last_edited_time FROM posts WHERE user_id = ?"
+	selectPostByIDQuery       = "SELECT post_id, user_id, title, body, creation_time, is_edited, last_edited_time FROM posts WHERE post_id = ?"
 	selectPostAuthorByIDQuery = "SELECT user_id FROM posts WHERE post_id = ?"
 	insertPostQuery           = "INSERT INTO posts (user_id, title, body) VALUES (?, ?, ?)"
-	updatePostQuery           = "UPDATE posts SET title = ?, body = ? WHERE post_id = ?"
+	updatePostQuery           = "UPDATE posts SET title = ?, body = ?, is_edited = TRUE, last_edited_time = CURRENT_TIMESTAMP WHERE post_id = ?"
 	deletePostByIDQuery       = "DELETE FROM posts WHERE post_id = ?"
 )
 
@@ -27,13 +27,21 @@ func (d *Database) ReadAllPosts() ([]models.Post, error) {
 	for rows.Next() {
 		var post models.Post
 		var creationTimeStr string
-		if err := rows.Scan(&post.PostID, &post.UserID, &post.Title, &post.Body, &creationTimeStr); err != nil {
+		var editedTimeStr string
+		if err := rows.Scan(&post.PostID, &post.UserID, &post.Title, &post.Body, &creationTimeStr, &post.IsEdited, &editedTimeStr); err != nil {
 			return nil, HandleError(err)
 		}
 
 		post.CreationTime, err = time.Parse("2006-01-02 15:04:05", creationTimeStr)
 		if err != nil {
 			return nil, HandleError(err)
+		}
+
+		if post.IsEdited {
+			post.LastEditedTime, err = time.Parse("2006-01-02 15:04:05", editedTimeStr)
+			if err != nil {
+				return nil, HandleError(err)
+			}
 		}
 
 		posts = append(posts, post)
@@ -57,13 +65,21 @@ func (d *Database) ReadAllPostsByUserID(userID int64) ([]models.Post, error) {
 	for rows.Next() {
 		var post models.Post
 		var creationTimeStr string
-		if err := rows.Scan(&post.PostID, &post.UserID, &post.Title, &post.Body, &creationTimeStr); err != nil {
+		var editedTimeStr string
+		if err := rows.Scan(&post.PostID, &post.UserID, &post.Title, &post.Body, &creationTimeStr, &post.IsEdited, &editedTimeStr); err != nil {
 			return nil, HandleError(err)
 		}
 
 		post.CreationTime, err = time.Parse("2006-01-02 15:04:05", creationTimeStr)
 		if err != nil {
 			return nil, HandleError(err)
+		}
+
+		if post.IsEdited {
+			post.LastEditedTime, err = time.Parse("2006-01-02 15:04:05", editedTimeStr)
+			if err != nil {
+				return nil, HandleError(err)
+			}
 		}
 
 		posts = append(posts, post)
