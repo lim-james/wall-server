@@ -43,6 +43,7 @@ CREATE TABLE post_comments (
     post_id INT,
     comment_text TEXT NOT NULL,
     creation_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    reply_id INT DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE
 );
