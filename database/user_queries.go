@@ -47,6 +47,18 @@ func (d *Database) CreateUser(user models.User) (int64, error) {
 	return id, HandleError(err)
 }
 
+func (d *Database) ReadUserIDByUsername(username string) (int64, error) {
+	var userID int64
+	err := d.DB.QueryRow("SELECT user_id FROM users WHERE username = ?", username).
+		Scan(&userID)
+
+	if err != nil {
+		return 0, HandleError(err)
+	}
+
+	return userID, nil
+}
+
 func (d *Database) DeleteUser(userID int64) error {
 	return HandleError(d.withTransaction(func(tx *sql.Tx) error {
 		_, err := tx.Exec("DELETE FROM users WHERE user_id = ?", userID)

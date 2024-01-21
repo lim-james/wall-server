@@ -30,10 +30,10 @@ func (ph *PostHandler) ReadAllPostHandler(c *gin.Context) {
 }
 
 func (ph *PostHandler) ReadAllPostsByUserIDHandler(c *gin.Context) {
-	userIDStr := c.Param("user_id")
-	userID, err := strconv.ParseInt(userIDStr, 10, 64)
+	username := c.Param("username")
+	userID, err := ph.DB.ReadUserIDByUsername(username)
 	if err != nil {
-		ErrorResponse(c, http.StatusBadRequest, errors.New("Invalid user_id"))
+		ErrorResponse(c, http.StatusBadRequest, errors.New("Invalid username"))
 		return
 	}
 

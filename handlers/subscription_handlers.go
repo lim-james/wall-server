@@ -55,7 +55,13 @@ func (ph *PostHandler) UnsubscribePostHandler(c *gin.Context) {
 }
 
 func (ph *PostHandler) ReadAllSubscribedPostsHandler(c *gin.Context) {
-	userID := c.MustGet("UserID").(int64)
+	username := c.Param("username")
+	userID, err := ph.DB.ReadUserIDByUsername(username)
+
+	if userID != c.MustGet("UserID").(int64) {
+		ErrorResponse(c, http.StatusUnauthorized, errors.New("You cannot read other user's subscribed posts"))
+		return
+	}
 
 	posts, err := ph.DB.ReadAllSubscribedPosts(userID)
 	if err != nil {

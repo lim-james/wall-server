@@ -75,9 +75,22 @@ func (ah *AuthHandler) SignupHandler(c *gin.Context) {
 }
 
 func (ah *AuthHandler) DeleteUserHandler(c *gin.Context) {
+	username := c.Param("username")
 	userID := c.MustGet("UserID").(int64)
-	err := ah.DB.DeleteUser(userID)
+	deletedUserID, err := ah.DB.ReadUserIDByUsername(username)
+
 	if err != nil {
+		ErrorResponse(c, http.StatusBadRequest, errors.New("Invalid username"))
+		return
+	}
+
+	if userID != deletedUserID {
+		ErrorResponse(c, http.StatusUnauthorized, errors.New("You cannot delete other user"))
+		return
+	}
+
+	
+	if err := ah.DB.DeleteUser(userID); err != nil {
 		ErrorResponse(c, http.StatusInternalServerError, err)
 		return
 	}
