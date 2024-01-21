@@ -7,9 +7,9 @@ import (
 )
 
 const (
-	selectPostsQuery          = "SELECT post_id, user_id, title, body, creation_time, is_edited, last_edited_time FROM posts"
-	selectPostsByUserIDQuery  = "SELECT post_id, user_id, title, body, creation_time, is_edited, last_edited_time FROM posts WHERE user_id = ?"
-	selectPostByIDQuery       = "SELECT post_id, user_id, title, body, creation_time, is_edited, last_edited_time FROM posts WHERE post_id = ?"
+	selectPostsQuery          = "SELECT post_id, user_id, title, body, creation_time, is_edited, IFNULL(last_edited_time, 'No Edit Time') as last_edited_time FROM posts"
+	selectPostsByUserIDQuery  = "SELECT post_id, user_id, title, body, creation_time, is_edited, IFNULL(last_edited_time, 'No Edit Time') as last_edited_time FROM posts WHERE user_id = ?"
+	selectPostByIDQuery       = "SELECT post_id, user_id, title, body, creation_time, is_edited, IFNULL(last_edited_time, 'No Edit Time') as last_edited_time FROM posts WHERE post_id = ?"
 	selectPostAuthorByIDQuery = "SELECT user_id FROM posts WHERE post_id = ?"
 	insertPostQuery           = "INSERT INTO posts (user_id, title, body) VALUES (?, ?, ?)"
 	updatePostQuery           = "UPDATE posts SET title = ?, body = ?, is_edited = TRUE, last_edited_time = CURRENT_TIMESTAMP WHERE post_id = ?"
