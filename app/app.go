@@ -49,6 +49,7 @@ func (s *Server) Run() error {
 	api := s.Router.Group("/api")
 	{
 		api.GET("/", postHandler.ReadAllPostHandler)
+		api.GET("/p/:post_id/like", postHandler.ReadLikesHandler)
 		api.GET("/p/:post_id/comments", postHandler.ReadAllCommentsHandler)
 
 		post := api.Group("/p")
