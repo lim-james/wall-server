@@ -71,7 +71,8 @@ func (s *Server) Run() error {
 		{
 			auth.POST("/signup", authHandler.SignupHandler)
 			auth.POST("/login", authHandler.LoginHandler)
-			auth.GET("/:username", postHandler.ReadAllPostsByUserIDHandler)
+			auth.GET("/:user_id", authHandler.ReadUserHandler)
+			auth.GET("/:username/posts", postHandler.ReadAllPostsByUserIDHandler)
 			auth.GET("/:username/subscriptions", handlers.AuthMiddleware(), postHandler.ReadAllSubscribedPostsHandler)
 			auth.DELETE("/:username", handlers.AuthMiddleware(), authHandler.DeleteUserHandler)
 		}
