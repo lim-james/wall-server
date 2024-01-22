@@ -8,6 +8,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func (ph *PostHandler) ReadLikesHandler(c *gin.Context) {
+	postIDStr := c.Param("post_id")
+	postID, err := strconv.ParseInt(postIDStr, 10, 64)
+	if err != nil {
+		ErrorResponse(c, http.StatusBadRequest, errors.New("Invalid post_id"))
+		return
+	}
+
+	totalLikes, err := ph.DB.GetTotalLikesForPost(postID)
+	if err != nil {
+		ErrorResponse(c, http.StatusInternalServerError, errors.New("Failed to fetch total likes"))
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"total_likes": totalLikes})
+}
+
 func (ph *PostHandler) LikePostHandler(c *gin.Context) {
 	userID := c.MustGet("UserID").(int64)
 
