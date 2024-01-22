@@ -12,7 +12,7 @@ const (
 	selectCommentAuthorByIDQuery   = "SELECT user_id FROM post_comments WHERE comment_id = ?"
 	insertCommentQuery             = "INSERT INTO post_comments (post_id, user_id, comment_text) VALUES (?, ?, ?)"
 	updateCommentQuery             = "UPDATE post_comments SET comment_text = ?, is_edited = TRUE, last_edited_time = CURRENT_TIMESTAMP WHERE comment_id = ?"
-	selectLastEditedTimeQuery 		 = "SELECT last_edited_time FROM post_comments WHERE comment_id = ?"
+	selectLastEditedTimeQuery      = "SELECT last_edited_time FROM post_comments WHERE comment_id = ?"
 	deleteCommentQuery             = "DELETE FROM post_comments WHERE comment_id = ?"
 )
 
@@ -113,14 +113,14 @@ func (d *Database) EditComment(comment models.Comment) (time.Time, error) {
 		if err != nil {
 			return err
 		}
-		
+
 		return tx.QueryRow(selectLastEditedTimeQuery, comment.CommentID).Scan(&lastEditedTimeStr)
 	})
 
 	if err != nil {
 		return time.Time{}, HandleError(err)
 	}
-	
+
 	lastEditTime, err := time.Parse("2006-01-02 15:04:05", lastEditedTimeStr)
 	return lastEditTime, HandleError(err)
 }

@@ -3,6 +3,7 @@ package handlers
 import (
 	"errors"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -74,6 +75,24 @@ func (ah *AuthHandler) SignupHandler(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"user": user, "token": token})
 }
 
+func (ah *AuthHandler) ReadUserHandler(c *gin.Context) {
+	userIDStr := c.Param("user_id")
+	userID, err := strconv.ParseInt(userIDStr, 10, 64)
+	if err != nil {
+		ErrorResponse(c, http.StatusBadRequest, err)
+		return
+	}
+
+	username, err := ah.DB.ReadUsernameByUserID(userID)
+
+	if err != nil {
+		ErrorResponse(c, http.StatusBadRequest, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"username": username})
+}
+
 func (ah *AuthHandler) DeleteUserHandler(c *gin.Context) {
 	username := c.Param("username")
 	userID := c.MustGet("UserID").(int64)
@@ -89,7 +108,6 @@ func (ah *AuthHandler) DeleteUserHandler(c *gin.Context) {
 		return
 	}
 
-	
 	if err := ah.DB.DeleteUser(userID); err != nil {
 		ErrorResponse(c, http.StatusInternalServerError, err)
 		return
