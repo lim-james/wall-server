@@ -81,5 +81,5 @@ func (ph *PostHandler) UnlikePostHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Post liked successfully", "total_likes": totalLikes})
+	c.JSON(http.StatusOK, gin.H{"message": "Post unliked successfully", "total_likes": totalLikes})
 }
