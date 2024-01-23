@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	selectPostsQuery          = "SELECT p.post_id, u.username, p.title, p.body, p.creation_time, p.is_edited, IFNULL(p.last_edited_time, 'No Edit Time') as last_edited_time, COUNT(l.post_id) AS like_count FROM posts p INNER JOIN users u ON p.user_id = u.user_id LEFT JOIN post_likes AS l ON p.post_id = l.post_id"
+	selectPostsQuery          = "SELECT p.post_id, u.username, p.title, p.body, p.creation_time, p.is_edited, IFNULL(p.last_edited_time, 'No Edit Time') as last_edited_time, COUNT(l.post_id) AS like_count FROM posts p INNER JOIN users u ON p.user_id = u.user_id LEFT JOIN post_likes AS l ON p.post_id = l.post_id GROUP BY p.post_id"
 	selectPostsByUserIDQuery  = "SELECT post_id, user_id, title, body, creation_time, is_edited, IFNULL(last_edited_time, 'No Edit Time') as last_edited_time FROM posts WHERE user_id = ?"
 	selectPostByIDQuery       = "SELECT p.post_id, u.username, p.title, p.body, p.creation_time, p.is_edited, IFNULL(p.last_edited_time, 'No Edit Time') as last_edited_time, COUNT(l.post_id) AS like_count FROM posts p INNER JOIN users u ON p.user_id = u.user_id LEFT JOIN post_likes AS l ON p.post_id = l.post_id WHERE p.post_id = ?"
 	selectPostAuthorByIDQuery = "SELECT user_id FROM posts WHERE post_id = ?"
