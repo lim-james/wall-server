@@ -11,3 +11,13 @@ type Post struct {
 	IsEdited       bool      `json:"is_edited"`
 	LastEditedTime time.Time `json:"last_edited_time"`
 }
+
+type PostFormatted struct {
+	PostID         int64     `json:"post_id"`
+	Username       string    `json:"username"`
+	Title          string    `json:"title" binding:"required"`
+	Body           string    `json:"body" binding:"required"`
+	CreationTime   time.Time `json:"creation_time"`
+	IsEdited       bool      `json:"is_edited"`
+	LastEditedTime time.Time `json:"last_edited_time"`
+}

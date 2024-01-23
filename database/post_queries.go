@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	selectPostsQuery          = "SELECT post_id, user_id, title, body, creation_time, is_edited, IFNULL(last_edited_time, 'No Edit Time') as last_edited_time FROM posts"
+	selectPostsQuery          = "SELECT p.post_id, u.username, p.title, p.body, p.creation_time, p.is_edited, IFNULL(p.last_edited_time, 'No Edit Time') as last_edited_time FROM posts p INNER JOIN users u ON p.user_id = u.user_id;"
 	selectPostsByUserIDQuery  = "SELECT post_id, user_id, title, body, creation_time, is_edited, IFNULL(last_edited_time, 'No Edit Time') as last_edited_time FROM posts WHERE user_id = ?"
 	selectPostByIDQuery       = "SELECT post_id, user_id, title, body, creation_time, is_edited, IFNULL(last_edited_time, 'No Edit Time') as last_edited_time FROM posts WHERE post_id = ?"
 	selectPostAuthorByIDQuery = "SELECT user_id FROM posts WHERE post_id = ?"
@@ -16,19 +16,19 @@ const (
 	deletePostByIDQuery       = "DELETE FROM posts WHERE post_id = ?"
 )
 
-func (d *Database) ReadAllPosts() ([]models.Post, error) {
+func (d *Database) ReadAllPosts() ([]models.PostFormatted, error) {
 	rows, err := d.DB.Query(selectPostsQuery)
 	if err != nil {
 		return nil, HandleError(err)
 	}
 	defer rows.Close()
 
-	var posts []models.Post
+	var posts []models.PostFormatted
 	for rows.Next() {
-		var post models.Post
+		var post models.PostFormatted
 		var creationTimeStr string
 		var editedTimeStr string
-		if err := rows.Scan(&post.PostID, &post.UserID, &post.Title, &post.Body, &creationTimeStr, &post.IsEdited, &editedTimeStr); err != nil {
+		if err := rows.Scan(&post.PostID, &post.Username, &post.Title, &post.Body, &creationTimeStr, &post.IsEdited, &editedTimeStr); err != nil {
 			return nil, HandleError(err)
 		}
 
