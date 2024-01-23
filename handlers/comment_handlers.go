@@ -52,7 +52,7 @@ func (ph *PostHandler) CreateCommentHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, comment)
+	c.JSON(http.StatusCreated, gin.H{"comment_id": comment.CommentID})
 }
 
 func (ph *PostHandler) EditCommentHandler(c *gin.Context) {
@@ -91,7 +91,7 @@ func (ph *PostHandler) EditCommentHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, newComment)
+	c.JSON(http.StatusCreated, gin.H{"comment_id": commentID})
 }
 
 func (ph *PostHandler) DeleteCommentHandler(c *gin.Context) {
