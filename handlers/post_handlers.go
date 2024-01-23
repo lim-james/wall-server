@@ -46,6 +46,30 @@ func (ph *PostHandler) ReadAllPostsByUserIDHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, posts)
 }
 
+func (ph *PostHandler) ReadPostByIDHandler(c *gin.Context) {
+	postIDStr := c.Param("post_id")
+	postID, err := strconv.ParseInt(postIDStr, 10, 64)
+	if err != nil {
+		ErrorResponse(c, http.StatusBadRequest, errors.New("Invalid post_id"))
+		return
+	}
+
+	var post models.PostDetailsFormatted
+
+	if err := ph.DB.ReadPostByID(postID, &post); err != nil {
+		ErrorResponse(c, http.StatusNotFound, err)
+		return
+	}
+
+	post.Comments, err = ph.DB.ReadAllCommentsByPostID(post.PostID)
+	if err != nil {
+		ErrorResponse(c, http.StatusNotFound, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, post)
+}
+
 func (ph *PostHandler) CreatePostHandler(c *gin.Context) {
 	var post models.Post
 
