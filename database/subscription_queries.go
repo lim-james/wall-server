@@ -2,11 +2,12 @@ package database
 
 import (
 	"database/sql"
+	"time"
 	"wall-server/database/models"
 )
 
 const (
-	selectSubscriptionQuery       = "SELECT post_id FROM subscriptions WHERE subscriber_id = ?"
+	selectSubscriptionQuery       = "SELECT p.post_id, p.user_id, p.title, p.body, p.creation_time, p.is_edited, IFNULL(p.last_edited_time, 'No Edit Time') as last_edited_time FROM posts p INNER JOIN subscriptions s ON p.post_id = s.post_id WHERE s.subscriber_id = ?"
 	selectSubscriptionExistsQuery = "SELECT 1 FROM subscriptions WHERE subscriber_id = ? AND post_id = ? LIMIT 1"
 	insertSubscriptionQuery       = "INSERT INTO subscriptions (subscriber_id, post_id) VALUES (?, ?)"
 	deleteSubscriptionQuery       = "DELETE FROM subscriptions WHERE subscriber_id = ? AND post_id = ?"
@@ -43,14 +44,23 @@ func (d *Database) ReadAllSubscribedPosts(userID int64) ([]models.Post, error) {
 
 	var posts []models.Post
 	for rows.Next() {
-		var postID int64
-		if err := rows.Scan(&postID); err != nil {
+		var post models.Post
+		var creationTimeStr string
+		var editedTimeStr string
+		if err := rows.Scan(&post.PostID, &post.UserID, &post.Title, &post.Body, &creationTimeStr, &post.IsEdited, &editedTimeStr); err != nil {
 			return nil, HandleError(err)
 		}
 
-		var post models.Post
-		if err := d.ReadPostByID(postID, &post); err != nil {
+		post.CreationTime, err = time.Parse("2006-01-02 15:04:05", creationTimeStr)
+		if err != nil {
 			return nil, HandleError(err)
+		}
+
+		if post.IsEdited {
+			post.LastEditedTime, err = time.Parse("2006-01-02 15:04:05", editedTimeStr)
+			if err != nil {
+				return nil, HandleError(err)
+			}
 		}
 
 		posts = append(posts, post)
