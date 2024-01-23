@@ -62,8 +62,7 @@ func (ph *PostHandler) CreatePostHandler(c *gin.Context) {
 		return
 	}
 
-	post.PostID = id
-	c.JSON(http.StatusCreated, post)
+	c.JSON(http.StatusCreated, gin.H{"post_id": id})
 }
 
 func (ph *PostHandler) EditPostHandler(c *gin.Context) {
@@ -102,7 +101,7 @@ func (ph *PostHandler) EditPostHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, newPost)
+	c.JSON(http.StatusCreated, gin.H{"post_id": postID})
 }
 
 func (ph *PostHandler) DeletePostHandler(c *gin.Context) {
