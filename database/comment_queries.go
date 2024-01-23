@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	selectAllCommentsByPostIDQuery = "SELECT c.comment_id, c.post_id, c.comment_text, c.creation_time, c.is_edited, IFNULL(c.last_edited_time, 'No Edit Time') as last_edited_time , c.reply_id, u.username FROM post_comments c INNER JOIN users u ON c.user_id = u.user_id WHERE c.post_id = ?"
+	selectAllCommentsByPostIDQuery = "SELECT c.comment_id, u.username, c.post_id, c.comment_text, c.creation_time, c.is_edited, IFNULL(c.last_edited_time, 'No Edit Time') as last_edited_time, COALESCE(ru.username, '') AS reply_username, COALESCE(r.comment_text, '') AS reply_comment_text FROM post_comments AS c JOIN users AS u ON c.user_id = u.user_id LEFT JOIN post_comments AS r ON c.reply_id = r.comment_id LEFT JOIN users AS ru ON r.user_id = ru.user_id WHERE c.post_id = ?"
 	selectCommentByIDQuery         = "SELECT comment_id, user_id, post_id, comment_text, creation_time, reply_id, is_edited, IFNULL(last_edited_time, 'No Edit Time') as last_edited_time FROM post_comments WHERE comment_id = ?"
 	selectCommentAuthorByIDQuery   = "SELECT user_id FROM post_comments WHERE comment_id = ?"
 	insertCommentQuery             = "INSERT INTO post_comments (post_id, user_id, comment_text, reply_id) VALUES (?, ?, ?, ?)"
@@ -28,7 +28,7 @@ func (d *Database) ReadAllCommentsByPostID(postID int64) ([]models.CommentFormat
 		var comment models.CommentFormatted
 		var creationTimeStr string
 		var editedTimeStr string
-		if err := rows.Scan(&comment.CommentID, &comment.PostID, &comment.Text, &creationTimeStr, &comment.IsEdited, &editedTimeStr, &comment.ReplyID, &comment.Username); err != nil {
+		if err := rows.Scan(&comment.CommentID, &comment.Username, &comment.PostID, &comment.Text, &creationTimeStr, &comment.IsEdited, &editedTimeStr, &comment.ReplyUsername, &comment.ReplyText); err != nil {
 			return nil, HandleError(err)
 		}
 
